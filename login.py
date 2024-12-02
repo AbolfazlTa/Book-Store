@@ -168,27 +168,6 @@ def login():
 
 
 
-@app.route('/admin/login', methods=['POST'])
-def admin_login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    db = get_db_connection()
-    cursor = db.cursor()
-    
-    admin = cursor.execute("SELECT * FROM admin WHERE username = ?", (username,)).fetchone()
-    db.close()
-    
-    if not admin:
-        return jsonify({"message": "Invalid admin username"}), 401
-
-    if not bcrypt.check_password_hash(admin['password'], password):
-        return jsonify({"message": "Invalid password"}), 401
-
-    access_token = create_access_token(identity=admin['username'])
-    return jsonify(access_token=access_token), 200
-
 
 
 
